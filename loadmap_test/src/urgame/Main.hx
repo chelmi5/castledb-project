@@ -11,7 +11,7 @@ import flambe.math.Rectangle;
 import haxe.Resource;
 
 import urgame.Data;
-import urgame.LoadMap;
+import urgame.CastleDBLoader;
 
 class Main
 {
@@ -52,22 +52,24 @@ class Main
 
     private static function loadCastleDB(pack :AssetPack)
     {
-        var myloadmap = new LoadMap(pack);
+        var myloadmap = new CastleDBLoader(pack);
         var npcFinrod = myloadmap.loadCharacter(Finrod);
         var npcHero = myloadmap.loadCharacter(Hero);
         var itemKey = myloadmap.loadItem(Key);
         var itemSword = myloadmap.loadItem(Sword);
 
+        myloadmap.loadTestMap();
+
         npcFinrod.x._ = 100; npcFinrod.y._ = 0;
         System.root.addChild(new Entity().add(npcFinrod));
 
-        npcHero.x._ = 0; npcHero.y._ = 100;
+        npcHero.x._ = 200; npcHero.y._ = 10;
         System.root.addChild(new Entity().add(npcHero));
 
-        itemKey.x._ = 40; itemKey.y._ = 40;
+        itemKey.x._ = 300; itemKey.y._ = 10;
         System.root.addChild(new Entity().add(itemKey));
 
-        itemSword.x._ = 80; itemSword.y._ = 80;
+        itemSword.x._ = 350; itemSword.y._ = 10;
         System.root.addChild(new Entity().add(itemSword));
 
         // var npcTestGuy = myloadmap.loadCharacter(TestGuy);
