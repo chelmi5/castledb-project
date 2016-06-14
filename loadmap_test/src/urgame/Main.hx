@@ -41,12 +41,6 @@ class Main
         var background = new FillSprite(0x202020, System.stage.width, System.stage.height);
         System.root.addChild(new Entity().add(background));
 
-        // Add a plane that moves along the screen
-        // var plane = new ImageSprite(pack.getTexture("plane"));
-        // plane.x._ = 30;
-        // plane.y.animateTo(200, 6);
-        // System.root.addChild(new Entity().add(plane));
-
         loadCastleDB(pack);
     }
 
@@ -58,7 +52,7 @@ class Main
         var itemKey = myloadmap.loadItem(Key);
         var itemSword = myloadmap.loadItem(Sword);
 
-        myloadmap.loadTestMap();
+        myloadmap.loadMap2();
 
         npcFinrod.x._ = 100; npcFinrod.y._ = 0;
         System.root.addChild(new Entity().add(npcFinrod));

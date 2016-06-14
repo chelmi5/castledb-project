@@ -91,26 +91,98 @@ class CastleDBLoader
 	{
 		var allLevels = Data.levelData.all[0];
 		var villageLevel = Data.levelData.get(FirstVillage);
-		var width = villageLevel.width;
-		var height = villageLevel.height;
+		var width = allLevels.width;
+		var height = allLevels.height;
 
 		trace("w: " + width);
 		trace("h: " + height);
 
 		for (layer in villageLevel.layers) {
 
+			var name = layer.name;
+			var decoded = layer.data.data.decode();
+			var _FileName = "forest";
+			var tileSize = 16;
+
+			trace(map_pack.getTexture(_FileName).height / tileSize);
+			trace(map_pack.getTexture(_FileName).width / tileSize);
+			trace(name);
+			trace(decoded);
+
 			for (x in 0 ... width) {
 				for (y in 0 ... height) {
-					var tileSize = 16;
+					
+					var tileID = decoded[x + y * width] - 1;
 
-					var _FileName = "forest";
-					var temp = new ImageSprite(map_pack.getTexture(_FileName).subTexture(0 * 16 , 0 * 16, 16, 16));
+					var temp = new ImageSprite(map_pack.getTexture(_FileName).subTexture(1 * 16 , 0 * 16, tileSize, tileSize));
+
 					temp.x._ = x * tileSize;
 					temp.y._ = y * tileSize;
 					System.root.addChild(new Entity().add(temp));
 				}
 			}
 		}
+	}
+
+	public function loadMap2()
+	{
+		var data = Data.levelData.all[0];
+		var width = data.width;
+		var height = data.height;
+		var currLayer = 0;
+		var tileSize = 16;
+
+		for(l in data.layers)
+		{
+			var d = l.data.data.decode();
+
+			for(y in 0...height)
+			{
+				for(x in 0...width)
+				{
+					var tileid = d[x + y * width] - 1;
+					if(tileid < 0) continue;
+					//tg.add(x * 16, y * 16, tiles[v]);
+					trace("tile id: " + tileid);
+					
+					if(tileid == 0)
+					{
+						var temp = new ImageSprite(map_pack.getTexture("forest").subTexture(0 * 16 , 0 * 16, tileSize, tileSize));
+						temp.x._ = x * tileSize;
+						temp.y._ = y * tileSize;
+						System.root.addChild(new Entity().add(temp));
+					}
+					else if(tileid == 1)
+					{
+						var temp2 = new ImageSprite(map_pack.getTexture("forest").subTexture(1 * 16 , 0 * 16, tileSize, tileSize));
+						temp2.x._ = x * tileSize;
+						temp2.y._ = y * tileSize;
+						System.root.addChild(new Entity().add(temp2));
+					}
+					else
+					{
+						// var temp = new ImageSprite(map_pack.getTexture("forest").subTexture(0 * 16 , 0 * 16, tileSize, tileSize));
+						// temp.x._ = x * tileSize;
+						// temp.y._ = y * tileSize;
+						// System.root.addChild(new Entity().add(temp));
+					}
+
+					// var tprops = data.props.getTileset(Data.levelData, l.data.file);
+					// var tbuild = new cdb.TileBuilder(tprops, t.width>>4, (t.width>>4) * (t.height>>4));
+					// var out = tbuild.buildGrounds(d, width);
+					// var i = 0;
+					// var max = out.length;
+					// while(i < max)
+					// {
+					// 	var _x = out[i++];
+					// 	var _y = out[i++];
+					// 	var tid = out[i++];
+					// 	//tilegroup.add(_x * 16, _y * 16, tiles[tid])
+					// }
+				}
+			}
+		}
+
 	}
 
 	public function loadMap()
@@ -125,18 +197,6 @@ class CastleDBLoader
 
 		for (layer in villageLevel.layers) {
 
-			for (x in 0 ... width) {
-				for (y in 0 ... height) {
-					var tileSize = 16;
-
-					var _FileName = "forest";
-					var temp = new ImageSprite(map_pack.getTexture(_FileName).subTexture(0 * 16 , 0 * 16, 16, 16));
-					temp.x._ = x * tileSize;
-					temp.y._ = y * tileSize;
-					System.root.addChild(new Entity().add(temp));
-				}
-			}
-
 			var name = layer.name;
 			var decoded = layer.data.data.decode();
 			trace(name);
@@ -147,34 +207,29 @@ class CastleDBLoader
 			var tbuild = new cdb.TileBuilder(tprops, 16, width * height);
 			var out = tbuild.buildGrounds(decoded, width);
 
-			var i = 0; var max = out.length;
+			var i = 0; var max = out.length; var tileSprite;
 			while(i < max) {
 				var x = out[i++];
 				var y = out[i++];
 				var tid = out[i++];	
+
+				var _FileName = Data.levelData.get(FirstVillage).layers[0].data.file;
+
+         		if(_FileName.indexOf(".") >= 0) //trim the extension
+        		{
+           		 _FileName = _FileName.substring(0, _FileName.lastIndexOf('.'));
+       			}
+
+				tileSprite = new ImageSprite(map_pack.getTexture(_FileName).subTexture(x * 16 , y * 16, 16, 16));
+				System.root.addChild(new Entity().add(tileSprite));
 			}
 
-			var _FileName = Data.levelData.get(FirstVillage).layers[0].data.file;
-
-         	if(_FileName.indexOf(".") >= 0) //trim the extension
-        	{
-           	 _FileName = _FileName.substring(0, _FileName.lastIndexOf('.'));
-       		}
-
-			var spriteSheet = new ImageSprite(map_pack.getTexture(_FileName));//.subTexture(x,y,16,16));
+			// var spriteSheet = new ImageSprite(map_pack.getTexture(_FileName));//.subTexture(x,y,16,16));
         	// characterSprite.scissor = new Rectangle(x, y, 16, 16);
-        	var tileSprite = new ImageSprite(map_pack.getTexture(_FileName).subTexture(6 * 16 , 3 * 16, 16, 16));
-        	tileSprite.x._ = 400;
-        	System.root.addChild(new Entity().add(tileSprite));
-        	System.root.addChild(new Entity().add(spriteSheet));
-
-
-			for (tile in decoded) {
-				// trace(tile);
-				// allLevels.props.getLayer("ground");
-
-				// var tileBuilder = new cdb.TileBuilder(Data.levelData.all[0].props, 16, decoded.length);
-			}
+        	// var tileSprite = new ImageSprite(map_pack.getTexture(_FileName).subTexture(6 * 16 , 3 * 16, 16, 16));
+        	// tileSprite.x._ = 400;
+        	
+        	// System.root.addChild(new Entity().add(spriteSheet));			
 
 		}
 
