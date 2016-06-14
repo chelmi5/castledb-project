@@ -145,26 +145,12 @@ class CastleDBLoader
 					//tg.add(x * 16, y * 16, tiles[v]);
 					trace("tile id: " + tileid);
 					
-					if(tileid == 0)
+					if(tileid < map_pack.getTexture("forest").width / tileSize)
 					{
-						var temp = new ImageSprite(map_pack.getTexture("forest").subTexture(0 * 16 , 0 * 16, tileSize, tileSize));
-						temp.x._ = x * tileSize;
-						temp.y._ = y * tileSize;
-						System.root.addChild(new Entity().add(temp));
-					}
-					else if(tileid == 1)
-					{
-						var temp2 = new ImageSprite(map_pack.getTexture("forest").subTexture(1 * 16 , 0 * 16, tileSize, tileSize));
-						temp2.x._ = x * tileSize;
-						temp2.y._ = y * tileSize;
-						System.root.addChild(new Entity().add(temp2));
-					}
-					else
-					{
-						// var temp = new ImageSprite(map_pack.getTexture("forest").subTexture(0 * 16 , 0 * 16, tileSize, tileSize));
-						// temp.x._ = x * tileSize;
-						// temp.y._ = y * tileSize;
-						// System.root.addChild(new Entity().add(temp));
+						var temp3 = new ImageSprite(map_pack.getTexture("forest").subTexture(tileid * 16 , 0 * 16, tileSize, tileSize));
+						temp3.x._ = x * tileSize;
+						temp3.y._ = y * tileSize;
+						System.root.addChild(new Entity().add(temp3));
 					}
 
 					// var tprops = data.props.getTileset(Data.levelData, l.data.file);
