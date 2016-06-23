@@ -54,10 +54,10 @@ class Main
 
         myloadmap.loadMap2();
 
-        npcFinrod.x._ = 100; npcFinrod.y._ = 0;
+        npcFinrod.x._ = 600; npcFinrod.y._ = 365;
         System.root.addChild(new Entity().add(npcFinrod));
 
-        npcHero.x._ = 200; npcHero.y._ = 10;
+        npcHero.x._ = 400; npcHero.y._ = 140;
         System.root.addChild(new Entity().add(npcHero));
 
         itemKey.x._ = 300; itemKey.y._ = 10;

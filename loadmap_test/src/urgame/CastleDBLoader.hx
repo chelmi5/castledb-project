@@ -149,15 +149,19 @@ class CastleDBLoader
 					
 					if(tileid < spritesheet_width)
 					{
-						var temp3 = new ImageSprite(map_pack.getTexture("forest").subTexture(tileid * 16 , 0 * 16, tileSize, tileSize));
+						var temp3 = new ImageSprite(map_pack.getTexture("forest").subTexture(tileid * tileSize , 0 * tileSize, tileSize, tileSize));
 						temp3.x._ = x * tileSize;
 						temp3.y._ = y * tileSize;
 						System.root.addChild(new Entity().add(temp3));
 					}
 					else
 					{
-						trace("tile id: " + tileid);
-						trace(tileid % spritesheet_height);
+						if(!Math.isNaN(tileid))
+						{
+							trace("tile id: " + tileid);
+							// trace("height location: " + tileid/tileSize);
+							// trace(tileid % spritesheet_height);
+						}						
 					}
 
 					// var tprops = data.props.getTileset(Data.levelData, l.data.file);
