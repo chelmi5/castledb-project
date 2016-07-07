@@ -5,6 +5,7 @@ import flambe.System;
 import flambe.math.Rectangle;
 import flambe.asset.AssetPack;
 import flambe.display.ImageSprite;
+import flambe.display.Texture;
 
 import urgame.Data;
 
@@ -80,51 +81,12 @@ class CastleDBLoader
         	_ImgHeight = _ImgHeight * Data.item.get(name).tile.height ;
         }
 
-        // var characterSprite = new ImageSprite(map_pack.getTexture(_FileName));
-        // characterSprite.scissor = new Rectangle(_X, _Y, _ImgWidth, _ImgHeight);
         var itemSprite = new ImageSprite(map_pack.getTexture(_FileName).subTexture(_X, _Y, _ImgWidth, _ImgHeight));
         
         return itemSprite;
 	}
 
-	public function loadTestMap()
-	{
-		var allLevels = Data.levelData.all[0];
-		var villageLevel = Data.levelData.get(FirstVillage);
-		var width = allLevels.width;
-		var height = allLevels.height;
-
-		trace("w: " + width);
-		trace("h: " + height);
-
-		for (layer in villageLevel.layers) {
-
-			var name = layer.name;
-			var decoded = layer.data.data.decode();
-			var _FileName = "forest";
-			var tileSize = 16;
-
-			trace(map_pack.getTexture(_FileName).height / tileSize);
-			trace(map_pack.getTexture(_FileName).width / tileSize);
-			trace(name);
-			trace(decoded);
-
-			for (x in 0 ... width) {
-				for (y in 0 ... height) {
-					
-					var tileID = decoded[x + y * width] - 1;
-
-					var temp = new ImageSprite(map_pack.getTexture(_FileName).subTexture(1 * 16 , 0 * 16, tileSize, tileSize));
-
-					temp.x._ = x * tileSize;
-					temp.y._ = y * tileSize;
-					System.root.addChild(new Entity().add(temp));
-				}
-			}
-		}
-	}
-
-	public function loadMap2()
+	public function loadMap()
 	{
 		var data = Data.levelData.all[0];
 		var width = data.width;
@@ -137,6 +99,7 @@ class CastleDBLoader
 		for(l in data.layers)
 		{
 			var d = l.data.data.decode();
+			trace(l.name);
 
 			for(y in 0...height)
 			{
@@ -144,110 +107,89 @@ class CastleDBLoader
 				{
 					var tileid = d[x + y * width] - 1;
 					if(tileid < 0) continue;
-					//tg.add(x * 16, y * 16, tiles[v]);
-					//trace("tile id: " + tileid);
-					
-					if(tileid < spritesheet_width)
-					{
-						var temp3 = new ImageSprite(map_pack.getTexture("forest").subTexture(tileid * tileSize , 0 * tileSize, tileSize, tileSize));
-						temp3.x._ = x * tileSize;
-						temp3.y._ = y * tileSize;
-						System.root.addChild(new Entity().add(temp3));
-					}
-					else
-					{
-						if(!Math.isNaN(tileid))
-						{
-							trace("tile id: " + tileid);
-							// trace("height location: " + tileid/tileSize);
-							// trace(tileid % spritesheet_height);
-						}						
-					}
 
-					// var tprops = data.props.getTileset(Data.levelData, l.data.file);
-					// var tbuild = new cdb.TileBuilder(tprops, t.width>>4, (t.width>>4) * (t.height>>4));
-					// var out = tbuild.buildGrounds(d, width);
-					// var i = 0;
-					// var max = out.length;
-					// while(i < max)
-					// {
-					// 	var _x = out[i++];
-					// 	var _y = out[i++];
-					// 	var tid = out[i++];
-					// 	//tilegroup.add(_x * 16, _y * 16, tiles[tid])
-					// }
+					if(!Math.isNaN(tileid) && l.name != "over") //only loads something if there's something in a given tile & it's not on layer "over"
+					{
+						// trace("tile id: " + tileid);
+						var tile = new ImageSprite( getFrame(map_pack.getTexture("forest"), tileid, tileSize, tileSize) );
+						tile.x._ = x * tileSize;
+						tile.y._ = y * tileSize;
+						System.root.addChild(new Entity().add(tile));
+					}
 				}
 			}
 		}
 
 	}
 
-	public function loadMap()
+	//Shamelessly ripped from http://lib.haxe.org/p/flambbets/0.3.1/files/flambbets/spritesheet/SpriteSheetTools.hx
+	/**
+    * Get one specific frame of a sprite sheet
+    *
+    * @param frameIndex the numeric index of the frame. e.g.: The first frame is the index of 0.
+    * @param frameWidth Width of each frame.
+    * @param frameHeight Height of each frame.
+    * @param margin If the frames have been drawn with a margin, specify the amount here.
+    * @param spacing If the frames have been drawn with spacing between them, specify the amount here.
+    * @returns The frame, a texture.
+    */
+	public function getFrame(spriteSheet:Texture, frameIndex:Int, frameWidth:Int, frameHeight:Int, margin:Int = 0, spacing:Int = 0) : Texture
 	{
-		var allLevels = Data.levelData.all[0];
-		var villageLevel = Data.levelData.get(FirstVillage);
-		var width = villageLevel.width;
-		var height = villageLevel.height;
+		var frame:Texture = null;
 
-		trace("w: " + width);
-		trace("h: " + height);
+	    var width = spriteSheet.width;
+	    var height = spriteSheet.height;
 
-		for (layer in villageLevel.layers) {
+	    #if debug
+	      validate(spriteSheet, frameWidth, frameHeight, margin, spacing);
 
-			var name = layer.name;
-			var decoded = layer.data.data.decode();
-			trace(name);
-			trace(decoded);
+	      var row = Math.floor( (width - margin) / (frameWidth + spacing) );
+	      var column = Math.floor( (height - margin) / (frameHeight + spacing) );
 
-			var p = villageLevel.props.getLayer("ground");
-			var tprops = villageLevel.props.getTileset(Data.levelData, Data.levelData.get(FirstVillage).layers[0].data.file);
-			var tbuild = new cdb.TileBuilder(tprops, 16, width * height);
-			var out = tbuild.buildGrounds(decoded, width);
+	      if (frameIndex >= (row * column) || frameIndex < 0) {
+	        throw "invalid frameIndex argument";
+	      }
+	    #end
 
-			var i = 0; var max = out.length; var tileSprite;
-			while(i < max) {
-				var x = out[i++];
-				var y = out[i++];
-				var tid = out[i++];	
+	    var x = margin;
+	    var y = margin;
 
-				var _FileName = Data.levelData.get(FirstVillage).layers[0].data.file;
+	    if (frameIndex == 0) {
+	      frame = spriteSheet.subTexture(x, y, frameWidth, frameHeight);
+	    }
+	    else {
+	      for (i in 0...frameIndex) {
+	        x += frameWidth + spacing;
 
-         		if(_FileName.indexOf(".") >= 0) //trim the extension
-        		{
-           		 _FileName = _FileName.substring(0, _FileName.lastIndexOf('.'));
-       			}
+	        if ((x + frameWidth) > width) {
+	          x = margin;
+	          y += frameHeight + spacing;
+	        }
 
-				tileSprite = new ImageSprite(map_pack.getTexture(_FileName).subTexture(x * 16 , y * 16, 16, 16));
-				System.root.addChild(new Entity().add(tileSprite));
-			}
+	        if (i == (frameIndex - 1)) {
+	          frame = spriteSheet.subTexture(x, y, frameWidth, frameHeight);
+	        }
+	      }
+	    }
 
-			// var spriteSheet = new ImageSprite(map_pack.getTexture(_FileName));//.subTexture(x,y,16,16));
-        	// characterSprite.scissor = new Rectangle(x, y, 16, 16);
-        	// var tileSprite = new ImageSprite(map_pack.getTexture(_FileName).subTexture(6 * 16 , 3 * 16, 16, 16));
-        	// tileSprite.x._ = 400;
-        	
-        	// System.root.addChild(new Entity().add(spriteSheet));			
+	    return frame;
+	  }
 
-		}
+	  #if debug
+	    private static function validate(spriteSheet:Texture, frameWidth:Int, frameHeight:Int, margin:Int = 0, spacing:Int = 0) {
+	      if (spriteSheet.width < frameWidth || spriteSheet.height < frameHeight) {
+	        throw "frame size can't be greater than texture size";
+	      }
 
-	}
+	      if (frameWidth <= 0 || frameHeight <= 0) {
+	        throw "frame size must be greater than zero";
+	      }
 
-	public function loadTile(x:Int, y:Int)
-	{
-		var test01 = Data.levelData.get(FirstVillage).layers[0];
-		var test02 = Data.levelData.get(FirstVillage).layers[0].data;
-		var test03 = Data.levelData.get(FirstVillage).layers[0].data.data;
-		var test04 = Data.levelData.get(FirstVillage).layers[0].data.file;
-		var test05 = Data.levelData.get(FirstVillage).layers[0].data.file.length;		
-		var test05 = Data.levelData.get(FirstVillage);
-
-		trace(test05);	
-		// trace(Data.levelData.all[0]);	
-
-		// trace(test01);
-
-		// trace(test04);
-	}
+	      if (margin < 0 || spacing < 0) {
+	        throw "margin and/or spacing can't be less than zero";
+	      }
+	    }
+	  #end
 }
 
 

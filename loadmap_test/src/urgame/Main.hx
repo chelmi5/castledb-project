@@ -52,7 +52,7 @@ class Main
         var itemKey = myloadmap.loadItem(Key);
         var itemSword = myloadmap.loadItem(Sword);
 
-        myloadmap.loadMap2();
+        myloadmap.loadMap();
 
         npcFinrod.x._ = 600; npcFinrod.y._ = 365;
         System.root.addChild(new Entity().add(npcFinrod));
@@ -65,10 +65,6 @@ class Main
 
         itemSword.x._ = 350; itemSword.y._ = 10;
         System.root.addChild(new Entity().add(itemSword));
-
-        // var npcTestGuy = myloadmap.loadCharacter(TestGuy);
-        // npcTestGuy.x._ = 150; npcTestGuy.y._ = 150;
-        // System.root.addChild(new Entity().add(npcTestGuy));
 
     }
 }
