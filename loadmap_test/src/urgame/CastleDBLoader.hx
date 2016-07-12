@@ -16,8 +16,6 @@ class CastleDBLoader
 	public function new(pack : AssetPack) {
 		map_pack = pack;
 		var castledb = pack.getFile("data.cdb").toString();
-        // trace(castledb); // Will show whole contents of the file.
-
         Data.load(castledb);
 	}
 
@@ -29,24 +27,14 @@ class CastleDBLoader
         var _ImgHeight = Data.npc.get(name).image.size;
         var _FileName = Data.npc.get(name).image.file;
 
-        if(_FileName.indexOf(".") >= 0) //trim the extension
-        {
-            _FileName = _FileName.substring(0, _FileName.lastIndexOf('.'));
-        }
+        //Trim the extension
+        _FileName = _FileName.indexOf(".") >= 0 ? _FileName = _FileName.substring(0, _FileName.lastIndexOf('.')) : "" ;
+        
+        _X = Data.npc.get(name).image.x > 0 ? _X * _ImgWidth : 0 ;
+        _Y = Data.npc.get(name).image.y > 0 ? _Y * _ImgHeight : 0 ;
 
-        if(Data.npc.get(name).image.x > 0) {
-        	_X =_X * _ImgWidth;
-        }
-        if(Data.npc.get(name).image.y > 0) {
-        	_Y = _Y * _ImgHeight;
-        }
-
-        if(Data.npc.get(name).image.width > 0) {
-        	_ImgWidth = _ImgWidth * Data.npc.get(name).image.width ;
-        }
-        if(Data.npc.get(name).image.height > 0) {
-        	_ImgHeight = _ImgHeight * Data.npc.get(name).image.height ;
-        }
+        _ImgWidth = Data.npc.get(name).image.width > 0 ? _ImgWidth * Data.npc.get(name).image.width : _ImgWidth ;
+        _ImgHeight = Data.npc.get(name).image.height > 0 ? _ImgHeight * Data.npc.get(name).image.height : _ImgHeight ;
 
         var characterSprite = new ImageSprite(map_pack.getTexture(_FileName).subTexture(_X, _Y, _ImgWidth, _ImgHeight));
         
@@ -62,24 +50,14 @@ class CastleDBLoader
         var _ImgHeight = Data.item.get(name).tile.size;
         var _FileName = Data.item.get(name).tile.file;
 
-         if(_FileName.indexOf(".") >= 0) //trim the extension
-        {
-            _FileName = _FileName.substring(0, _FileName.lastIndexOf('.'));
-        }
+        //Trim the extension
+        _FileName = _FileName.indexOf(".") >= 0 ? _FileName = _FileName.substring(0, _FileName.lastIndexOf('.')) : "" ;
+        
+        _X = Data.item.get(name).tile.x > 0 ? _X * _ImgWidth : 0 ;
+        _Y = Data.item.get(name).tile.y > 0 ? _Y * _ImgHeight : 0 ;
 
-        if(Data.item.get(name).tile.x > 0) {
-        	_X =_X * _ImgWidth;
-        }
-        if(Data.item.get(name).tile.y > 0) {
-        	_Y = _Y * _ImgHeight;
-        }
-
-        if(Data.item.get(name).tile.width > 0) {
-        	_ImgWidth = _ImgWidth * Data.item.get(name).tile.width ;
-        }
-        if(Data.item.get(name).tile.height > 0) {
-        	_ImgHeight = _ImgHeight * Data.item.get(name).tile.height ;
-        }
+        _ImgWidth = Data.item.get(name).tile.width > 0 ? _ImgWidth * Data.item.get(name).tile.width : _ImgWidth ;
+        _ImgHeight = Data.item.get(name).tile.height > 0 ? _ImgHeight * Data.item.get(name).tile.height : _ImgHeight ;
 
         var itemSprite = new ImageSprite(map_pack.getTexture(_FileName).subTexture(_X, _Y, _ImgWidth, _ImgHeight));
         
@@ -108,9 +86,8 @@ class CastleDBLoader
 					var tileid = d[x + y * width] - 1;
 					if(tileid < 0) continue;
 
-					if(!Math.isNaN(tileid) && l.name != "over") //only loads something if there's something in a given tile & it's not on layer "over"
+					if(!Math.isNaN(tileid))
 					{
-						// trace("tile id: " + tileid);
 						var tile = new ImageSprite( getFrame(map_pack.getTexture("forest"), tileid, tileSize, tileSize) );
 						tile.x._ = x * tileSize;
 						tile.y._ = y * tileSize;

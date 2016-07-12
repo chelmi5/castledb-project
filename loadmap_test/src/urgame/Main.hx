@@ -51,6 +51,7 @@ class Main
         var npcHero = myloadmap.loadCharacter(Hero);
         var itemKey = myloadmap.loadItem(Key);
         var itemSword = myloadmap.loadItem(Sword);
+        var itemBook = myloadmap.loadItem(Book);
 
         myloadmap.loadMap();
 
@@ -60,11 +61,14 @@ class Main
         npcHero.x._ = 400; npcHero.y._ = 140;
         System.root.addChild(new Entity().add(npcHero));
 
-        itemKey.x._ = 300; itemKey.y._ = 10;
+        itemKey.x._ = 400; itemKey.y._ = 50;
         System.root.addChild(new Entity().add(itemKey));
 
-        itemSword.x._ = 350; itemSword.y._ = 10;
+        itemSword.x._ = 400; itemSword.y._ = 30;
         System.root.addChild(new Entity().add(itemSword));
+
+        itemBook.x._ = 400; itemBook.y._ = 10;
+        System.root.addChild(new Entity().add(itemBook));
 
     }
 }
