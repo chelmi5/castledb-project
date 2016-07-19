@@ -51,12 +51,44 @@ class TileBuilder {
 
 	*/
 
+	var topLeft_Bit = 1;
+	var topMid_Bit = 2;
+	var topRight_Bit = 4;
+	var midLeft_Bit = 8;
+	var midRight_Bit = 16;
+	var lowLeft_Bit = 32;
+	var lowMid_Bit = 64;
+	var lowRight_Bit = 128;
+
+	var topLeft_Corner = 0;
+	var topMid_Corner = 1;
+	var topRight_Corner = 2;
+	var midLeft_Corner = 3;
+	var midRight_Corner = 4;
+	var lowLeft_Corner = 5;
+	var lowMid_Corner = 6;
+	var lowRight_Corner = 7;
+
+	var topLeft_LowerCorner = 9;
+	var topRight_LowerCorner = 10;
+	var lowLeft_LowerCorner = 11;
+	var lowRight_LowerCorner = 12;
+
+	var top_UCorner = 13;
+	var midLeft_UCorner = 14;
+	var midRight_UCorner = 15;
+	var low_UCorner = 16;
+
+	var left_Bottom = 17;
+	var mid_Bottom = 18;
+	var right_Bottom = 19;
+
 
 	var groundMap : Array<Int>;
 	var groundIds = new Map<String, { id : Int, fill : Array<Int> }>();
 	var borders = new Array<Array<Array<Int>>>();
 
-	public function new( curr : TilesetProps, stride : Int, total : Int ) {
+	public function new( t : TilesetProps, stride : Int, total : Int ) {
 		groundMap = [];
 		for( i in 0...total+1 )
 			groundMap[i] = 0;
@@ -65,8 +97,8 @@ class TileBuilder {
 
 		// get all grounds
 		var tmp = new Map();
-		for( s in curr.sets )
-			switch( s.curr ) {
+		for( s in t.sets )
+			switch( s.t ) {
 			case Ground if( s.opts.name != "" && s.opts.name != null ):
 				var g = tmp.get(s.opts.name);
 				if( g == null ) {
@@ -104,8 +136,8 @@ class TileBuilder {
 
 		// save borders combos
 		var allBorders = [];
-		for( s in curr.sets )
-			if( s.curr == Border )
+		for( s in t.sets )
+			if( s.t == Border )
 				allBorders.push(s);
 		inline function bweight(b) {
 			var k = 0;
@@ -151,12 +183,12 @@ class TileBuilder {
 			default:
 			}
 			for( g in gids )
-				for( curr in tids ) {
-					var bt = borders[g + curr * 256];
+				for( t in tids ) {
+					var bt = borders[g + t * 256];
 					if( bt == null || clear ) {
 						bt = [for( i in 0...20 ) []];
 						if( gid != null ) bt[8] = gid.fill;
-						borders[g + curr * 256] = bt;
+						borders[g + t * 256] = bt;
 					}
 					for( dx in 0...b.w )
 						for( dy in 0...b.h ) {
@@ -166,37 +198,37 @@ class TileBuilder {
 								if( dy == 0 )
 									k = dx == 0 ? 0 : dx == b.w - 1 ? 2 : 1;
 								else if( dy == b.h - 1 )
-									k = dx == 0 ? 5 : dx == b.w - 1 ? 7 : 6;
+									k = dx == 0 ? lowLeft_Corner : dx == b.w - 1 ? lowRight_Corner : lowMid_Corner;
 								else if( dx == 0 )
-									k = 3;
+									k = midLeft_Corner; //3
 								else if( dx == b.w - 1 )
-									k = 4;
+									k = midRight_Corner; //4
 								else
 									continue;
 							case "corner":
 								if( dx == 0 && dy == 0 )
-									k = 9;
+									k = topLeft_LowerCorner; //9
 								else if( dx == b.w - 1 && dy == 0 )
-									k = 10;
+									k = topRight_LowerCorner; //10
 								else if( dx == 0 && dy == b.h - 1 )
-									k = 11;
+									k = lowLeft_LowerCorner; //11
 								else if( dx == b.w - 1 && dy == b.h - 1 )
-									k = 12;
+									k = lowRight_LowerCorner; //12
 								else
 									continue;
 							case "u":
 								if( dx == 1 && dy == 0 )
-									k = 13;
+									k = top_UCorner; //13
 								else if( dx == 0 && dy == 1 )
-									k = 14;
+									k = midLeft_UCorner; //14
 								else if( dx == 2 && dy == 1 )
-									k = 15;
+									k = midRight_UCorner; //15
 								else if( dx == 1 && dy == 2 )
-									k = 16;
+									k = low_UCorner; //16
 								else
 									continue;
 							case "bottom":
-								k = dx == 0 ? 17 : dx == b.w - 1 ? 19 : 18;
+								k = dx == 0 ? left_Bottom : dx == b.w - 1 ? right_Bottom : mid_Bottom;
 							default:
 								continue;
 							}
@@ -234,42 +266,42 @@ class TileBuilder {
 				var v = input[++p];
 				var g = groundMap[v];
 				var g_left = x == 0 ? g : groundMap[input[p - 1]]; // if x == 0, then g_left = g, else g_left = groundMap[input[p - 1]]
-				var ground_right = x == width - 1 ? g : groundMap[input[p + 1]]; //if x == width - 1, then ground_right = g, else ground_right = groundMap[input[p + 1]]
-				var ground_top = y == 0 ? g : groundMap[input[p - width]]; //if y == 0, then ground_top = g, else ground_top = groundMap[input[p - width]]
-				var ground_bottom = y == height - 1 ? g : groundMap[input[p + width]]; //if y == height - 1, then ground_bottom = g, else ground_bottom = groundMap[input[p + width]]
+				var g_right = x == width - 1 ? g : groundMap[input[p + 1]]; //if x == width - 1, then g_right = g, else g_right = groundMap[input[p + 1]]
+				var g_top = y == 0 ? g : groundMap[input[p - width]]; //if y == 0, then g_top = g, else g_top = groundMap[input[p - width]]
+				var g_bottom = y == height - 1 ? g : groundMap[input[p + width]]; //if y == height - 1, then g_bottom = g, else g_bottom = groundMap[input[p + width]]
 
-				var ground_top_left = x == 0 || y == 0 ? g : groundMap[input[p - 1 - width]];
-				var ground_top_right = x == width - 1 || y == 0 ? g : groundMap[input[p + 1 - width]];
-				var ground_bottom_left = x == 0 || y == height-1 ? g : groundMap[input[p - 1 + width]];
-				var ground_bottom_right = x == width - 1 || y == height - 1 ? g : groundMap[input[p + 1 + width]];
+				var g_top_left = x == 0 || y == 0 ? g : groundMap[input[p - 1 - width]];
+				var g_top_right = x == width - 1 || y == 0 ? g : groundMap[input[p + 1 - width]];
+				var g_bottom_left = x == 0 || y == height-1 ? g : groundMap[input[p - 1 + width]];
+				var g_bottom_right = x == width - 1 || y == height - 1 ? g : groundMap[input[p + 1 + width]];
 
 				inline function max(a, b) return a > b ? a : b;
 				inline function min(a, b) return a > b ? b : a;
-				var max = max(max(max(ground_right, g_left), max(ground_top, ground_bottom)), max(max(ground_top_right, ground_top_left), max(ground_bottom_right, ground_bottom_left)));
-				var min = min(min(min(ground_right, g_left), min(ground_top, ground_bottom)), min(min(ground_top_right, ground_top_left), min(ground_bottom_right, ground_bottom_left)));
+				var max = max(max(max(g_right, g_left), max(g_top, g_bottom)), max(max(g_top_right, g_top_left), max(g_bottom_right, g_bottom_left)));
+				var min = min(min(min(g_right, g_left), min(g_top, g_bottom)), min(min(g_top_right, g_top_left), min(g_bottom_right, g_bottom_left)));
 
-				for( curr in min...max + 1 ) {
-					var bb = borders[curr + g * 256];
+				for( t in min...max + 1 ) {
+					var bb = borders[t + g * 256];
 
 					if( bb == null ) continue;
 
 					var bits = 0;
-					if( curr == ground_top_left )
-						bits |= 1;
-					if( curr == ground_top )
-						bits |= 2;
-					if( curr == ground_top_right )
-						bits |= 4;
-					if( curr == g_left )
-						bits |= 8;
-					if( curr == ground_right )
-						bits |= 16;
-					if( curr == ground_bottom_left )
-						bits |= 32;
-					if( curr == ground_bottom )
-						bits |= 64;
-					if( curr == ground_bottom_right )
-						bits |= 128;
+					if( t == g_top_left )
+						bits |= topLeft_Bit; //1
+					if( t == g_top )
+						bits |= topMid_Bit; //2
+					if( t == g_top_right )
+						bits |= topRight_Bit; //4
+					if( t == g_left )
+						bits |= midLeft_Bit; //8
+					if( t == g_right )
+						bits |= midRight_Bit; //16
+					if( t == g_bottom_left )
+						bits |= lowLeft_Bit; //32
+					if( t == g_bottom )
+						bits |= lowMid_Bit; //64
+					if( t == g_bottom_right )
+						bits |= lowRight_Bit; //128
 
 					inline function addTo( x : Int, y : Int, a : Array<Int> ) {
 						out.push(x);
@@ -294,24 +326,34 @@ class TileBuilder {
 						return f;
 					}
 
-					check(2 | 8 | 16, 1 | 4, 13);
-					check(2 | 8 | 64, 1 | 32, 14);
-					check(2 | 16 | 64, 4 | 128, 15);
-					check(8 | 16 | 64, 32 | 128, 16);
+					check(topMid_Bit | midLeft_Bit | midRight_Bit, topLeft_Bit | topRight_Bit, top_UCorner)
+					// check(2 | 8 | 16, 1 | 4, 13);
+					check(topMid_Bit | midLeft_Bit | lowMid_Bit, topLeft_Bit | lowLeft_Bit, midLeft_UCorner);
+					// check(2 | 8 | 64, 1 | 32, 14);
+					check(topMid_Bit | midRight_Bit | lowMid_Bit, topRight_Bit | lowRight_Bit, midRight_UCorner);
+					// check(2 | 16 | 64, 4 | 128, 15);
+					check(midLeft_Bit | midRight_Bit | lowMid_Bit, lowLeft_Bit | lowRight_Bit, low_UCorner);
+					// check(8 | 16 | 64, 32 | 128, 16);
 
-					check(2 | 8, 1 | 4 | 32, 9);
-					check(2 | 16, 1 | 4 | 128, 10);
-					check(8 | 64, 1 | 32 | 128, 11);
-					check(16 | 64, 4 | 32 | 128, 12);
+					check(topMid_Bit | midLeft_Bit, topLeft_Bit | topRight_Bit | lowLeft_Bit, topLeft_LowerCorner);
+					// check(2 | 8, 1 | 4 | 32, 9);
+					check(topMid_Bit | midRight_Bit, topLeft_Bit | topRight_Bit | lowRight_Bit, topRight_LowerCorner);
+					// check(2 | 16, 1 | 4 | 128, 10);
+					check(midLeft_Bit | lowMid_Bit, topLeft_Bit | lowLeft_Bit | lowRight_Bit, lowLeft_LowerCorner);
+					// check(8 | 64, 1 | 32 | 128, 11);
+					check(midRight_Bit | lowMid_Bit, topRight_Bit | lowLeft_Bit | lowRight_Bit, lowRight_LowerCorner);
+					// check(16 | 64, 4 | 32 | 128, 12);
 
-					if( check(2, 1 | 4, 6) ) {
+					if( check(topMid_Bit, topLeft_Bit | topRight_Bit, lowMid_Corner) ) 
+					{
+					// if( check(2, 1 | 4, 6) ) {
 						var a = bb[18];
 						if( a.length != 0 ) {
 							out.push(x);
 							out.push(y + 1);
-							if( x > 0 && y > 0 && groundMap[input[p - 1 - width]] != curr )
+							if( x > 0 && y > 0 && groundMap[input[p - 1 - width]] != t )
 								out.push(a[0]);
-							else if( x < width - 1 && y > 0 && groundMap[input[p + 1 - width]] != curr )
+							else if( x < width - 1 && y > 0 && groundMap[input[p + 1 - width]] != t )
 								out.push(a[a.length - 1]);
 							else if( a.length == 1 )
 								out.push(a[0]);
