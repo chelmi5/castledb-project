@@ -199,31 +199,31 @@ class TileBuilder {
 								else if( dy == b.h - 1 )
 									k = dx == 0 ? LOW_LEFT_CORNER : dx == b.w - 1 ? LOW_RIGHT_CORNER : LOW_MID_CORNER;
 								else if( dx == 0 )
-									k = MID_LEFT_CORNER; //3
+									k = MID_LEFT_CORNER;
 								else if( dx == b.w - 1 )
-									k = MID_RIGHT_CORNER; //4
+									k = MID_RIGHT_CORNER;
 								else
 									continue;
 							case "corner":
 								if( dx == 0 && dy == 0 )
-									k = TOP_LEFT_LOWERCORNER; //9
+									k = TOP_LEFT_LOWERCORNER;
 								else if( dx == b.w - 1 && dy == 0 )
-									k = TOP_RIGHT_LOWERCORNER; //10
+									k = TOP_RIGHT_LOWERCORNER;
 								else if( dx == 0 && dy == b.h - 1 )
-									k = LOW_LEFT_LOWERCORNER; //11
+									k = LOW_LEFT_LOWERCORNER;
 								else if( dx == b.w - 1 && dy == b.h - 1 )
-									k = LOW_RIGHT_LOWERCORNER; //12
+									k = LOW_RIGHT_LOWERCORNER;
 								else
 									continue;
 							case "u":
 								if( dx == 1 && dy == 0 )
-									k = TOP_UCORNER; //13
+									k = TOP_UCORNER;
 								else if( dx == 0 && dy == 1 )
-									k = MID_LEFT_UCORNER; //14
+									k = MID_LEFT_UCORNER;
 								else if( dx == 2 && dy == 1 )
-									k = MID_RIGHT_UCORNER; //15
+									k = MID_RIGHT_UCORNER;
 								else if( dx == 1 && dy == 2 )
-									k = LOW_UCORNER; //16
+									k = LOW_UCORNER;
 								else
 									continue;
 							case "bottom":
@@ -286,21 +286,21 @@ class TileBuilder {
 
 					var bits = 0;
 					if( t == g_top_left )
-						bits |= TOP_LEFT_BIT; //1
+						bits |= TOP_LEFT_BIT;
 					if( t == g_top )
-						bits |= TOP_MID_BIT; //2
+						bits |= TOP_MID_BIT;
 					if( t == g_top_right )
-						bits |= TOP_RIGHT_BIT; //4
+						bits |= TOP_RIGHT_BIT;
 					if( t == g_left )
-						bits |= MID_LEFT_BIT; //8
+						bits |= MID_LEFT_BIT;
 					if( t == g_right )
-						bits |= MID_RIGHT_BIT; //16
+						bits |= MID_RIGHT_BIT;
 					if( t == g_bottom_left )
-						bits |= LOW_LEFT_BIT; //32
+						bits |= LOW_LEFT_BIT;
 					if( t == g_bottom )
-						bits |= LOW_MID_BIT; //64
+						bits |= LOW_MID_BIT;
 					if( t == g_bottom_right )
-						bits |= LOW_RIGHT_BIT; //128
+						bits |= LOW_RIGHT_BIT;
 
 					inline function addTo( x : Int, y : Int, a : Array<Int> ) {
 						out.push(x);
@@ -326,26 +326,17 @@ class TileBuilder {
 					}
 
 					check(TOP_MID_BIT | MID_LEFT_BIT | MID_RIGHT_BIT, TOP_LEFT_BIT | TOP_RIGHT_BIT, TOP_UCORNER)
-					// check(2 | 8 | 16, 1 | 4, 13);
 					check(TOP_MID_BIT | MID_LEFT_BIT | LOW_MID_BIT, TOP_LEFT_BIT | LOW_LEFT_BIT, MID_LEFT_UCORNER);
-					// check(2 | 8 | 64, 1 | 32, 14);
 					check(TOP_MID_BIT | MID_RIGHT_BIT | LOW_MID_BIT, TOP_RIGHT_BIT | LOW_RIGHT_BIT, MID_RIGHT_UCORNER);
-					// check(2 | 16 | 64, 4 | 128, 15);
 					check(MID_LEFT_BIT | MID_RIGHT_BIT | LOW_MID_BIT, LOW_LEFT_BIT | LOW_RIGHT_BIT, LOW_UCORNER);
-					// check(8 | 16 | 64, 32 | 128, 16);
 
 					check(TOP_MID_BIT | MID_LEFT_BIT, TOP_LEFT_BIT | TOP_RIGHT_BIT | LOW_LEFT_BIT, TOP_LEFT_LOWERCORNER);
-					// check(2 | 8, 1 | 4 | 32, 9);
 					check(TOP_MID_BIT | MID_RIGHT_BIT, TOP_LEFT_BIT | TOP_RIGHT_BIT | LOW_RIGHT_BIT, TOP_RIGHT_LOWERCORNER);
-					// check(2 | 16, 1 | 4 | 128, 10);
 					check(MID_LEFT_BIT | LOW_MID_BIT, TOP_LEFT_BIT | LOW_LEFT_BIT | LOW_RIGHT_BIT, LOW_LEFT_LOWERCORNER);
-					// check(8 | 64, 1 | 32 | 128, 11);
 					check(MID_RIGHT_BIT | LOW_MID_BIT, TOP_RIGHT_BIT | LOW_LEFT_BIT | LOW_RIGHT_BIT, LOW_RIGHT_LOWERCORNER);
-					// check(16 | 64, 4 | 32 | 128, 12);
 
 					if( check(TOP_MID_BIT, TOP_LEFT_BIT | TOP_RIGHT_BIT, LOW_MID_CORNER) ) 
 					{
-					// if( check(2, 1 | 4, 6) ) {
 						var a = bb[18];
 						if( a.length != 0 ) {
 							out.push(x);
@@ -362,28 +353,22 @@ class TileBuilder {
 					}
 
 					check(MID_LEFT_BIT, TOP_LEFT_BIT | LOW_LEFT_BIT, MID_RIGHT_CORNER);
-					// check(8, 1 | 32, 4);
 					check(MID_RIGHT_BIT, TOP_RIGHT_BIT | LOW_RIGHT_BIT, MID_LEFT_CORNER);
-					// check(16, 4 | 128, 3);
 					check(LOW_MID_BIT, LOW_LEFT_BIT | LOW_RIGHT_BIT, TOP_MID_CORNER);
-					// check(64, 32 | 128, 1);
 
 					if( check(TOP_LEFT_BIT, TOP_LEFT_BIT, LOW_RIGHT_CORNER) ) {
-					// if( check(1, 1, 7) ) {
 						var a = bb[19];
 						if( a.length != 0 )
 							addTo(x, y + 1, a);
 					}
 					if( check(TOP_RIGHT_BIT, TOP_RIGHT_BIT, LOW_LEFT_CORNER) ) {
-					// if( check(4, 4, 5) ) {
 						var a = bb[17];
 						if( a.length != 0 )
 							addTo(x, y + 1, a);
 					}
+					
 					check(LOW_LEFT_BIT, LOW_LEFT_BIT, TOP_RIGHT_CORNER);
-					// check(32, 32, 2);
 					check(LOW_RIGHT_BIT, LOW_RIGHT_BIT, TOP_LEFT_CORNER);
-					// check(128, 128, 0);
 				}
 			}
 		return out;

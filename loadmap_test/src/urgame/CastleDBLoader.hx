@@ -103,50 +103,7 @@ class CastleDBLoader
 		return bigArray;
 
 	}
-/*
-	public function checkNeighbors(d:Array, x:Int, y:Int, width:Int)
-	{
-		/*
-			A   B   C
-			D   E   F
-			G   H   I
 
-		currTileId == E
-		
-		var currTileId = d[x + y * width] - 1;
-
-		var a = d[(x-1) + (y-1) * width] - 1;
-		var b = d[(x+0) + (y-1) * width] - 1;
-		var c = d[(x+1) + (y-1) * width] - 1;
-		var d = d[(x-1) + (y+0) * width] - 1;
-		var e = d[(x+0) + (y+0) * width] - 1;
-		var f = d[(x+1) + (y+0) * width] - 1;
-		var g = d[(x-1) + (y+1) * width] - 1;
-		var h = d[(x+0) + (y+1) * width] - 1;
-		var i = d[(x+1) + (y+1) * width] - 1;
-
-		switch (currTileId) {
-			case a:
-				trace("a == currTileId"); break;
-			case b:
-				trace("b == currTileId"); break;
-			case c:
-				trace("c == currTileId"); break;
-			case d:
-				trace("d == currTileId"); break;
-			case e:
-				trace("e == currTileId ... duh"); break;
-			case f:
-				trace("f == currTileId"); break;
-			case g:
-				trace("g == currTileId"); break;
-			case h:
-				trace("h == currTileId"); break;
-			case i:
-				trace("i == currTileId"); break;
-		}
-	}
-*/
 	//Shamelessly ripped from http://lib.haxe.org/p/flambbets/0.3.1/files/flambbets/spritesheet/SpriteSheetTools.hx
 	/**
     * Get one specific frame of a sprite sheet
