@@ -51,38 +51,37 @@ class TileBuilder {
 
 	*/
 
-	var topLeft_Bit = 1;
-	var topMid_Bit = 2;
-	var topRight_Bit = 4;
-	var midLeft_Bit = 8;
-	var midRight_Bit = 16;
-	var lowLeft_Bit = 32;
-	var lowMid_Bit = 64;
-	var lowRight_Bit = 128;
+	private static inline var TOP_LEFT_BIT:Int	= 1; 	// 1 << 0; 
+	private static inline var TOP_MID_BIT:Int	= 2;	// 1 << 1;
+ 	private static inline var TOP_RIGHT_BIT:Int	= 4;	// 1 << 2;
+	private static inline var MID_LEFT_BIT:Int	= 8;	// 1 << 3;
+	private static inline var MID_RIGHT_BIT:Int	= 16;	// 1 << 4;
+	private static inline var LOW_LEFT_BIT:Int	= 32;	// 1 << 5;
+	private static inline var LOW_MID_BIT:Int	= 64;	// 1 << 6;
+	private static inline var LOW_RIGHT_BIT:Int	= 128;	// 1 << 7;
 
-	var topLeft_Corner = 0;
-	var topMid_Corner = 1;
-	var topRight_Corner = 2;
-	var midLeft_Corner = 3;
-	var midRight_Corner = 4;
-	var lowLeft_Corner = 5;
-	var lowMid_Corner = 6;
-	var lowRight_Corner = 7;
+	private static inline var TOP_LEFT_CORNER:Int	= 0;
+	private static inline var TOP_MID_CORNER:Int	= 1;
+ 	private static inline var TOP_RIGHT_CORNER:Int	= 2;
+	private static inline var MID_LEFT_CORNER:Int	= 3;
+	private static inline var MID_RIGHT_CORNER:Int	= 4;
+	private static inline var LOW_LEFT_CORNER:Int	= 5;
+	private static inline var LOW_MID_CORNER:Int	= 6;
+	private static inline var LOW_RIGHT_CORNER:Int	= 7;
 
-	var topLeft_LowerCorner = 9;
-	var topRight_LowerCorner = 10;
-	var lowLeft_LowerCorner = 11;
-	var lowRight_LowerCorner = 12;
+	private static inline var TOP_LEFT_LOWERCORNER:Int	= 9;
+	private static inline var TOP_RIGHT_LOWERCORNER:Int	= 10;
+	private static inline var LOW_LEFT_LOWERCORNER:Int	= 11;
+	private static inline var LOW_RIGHT_LOWERCORNER:Int	= 12;
 
-	var top_UCorner = 13;
-	var midLeft_UCorner = 14;
-	var midRight_UCorner = 15;
-	var low_UCorner = 16;
+	private static inline var TOP_UCORNER:Int		= 13;
+	private static inline var MID_LEFT_UCORNER:Int	= 14;
+	private static inline var MID_RIGHT_UCORNER:Int	= 15;
+	private static inline var LOW_UCORNER:Int		= 16;
 
-	var left_Bottom = 17;
-	var mid_Bottom = 18;
-	var right_Bottom = 19;
-
+	private static inline var LEFT_BOTTOM:Int		= 17;
+	private static inline var MID_BOTTOM:Int		= 18;
+	private static inline var RIGHT_BOTTOM:Int		= 19;
 
 	var groundMap : Array<Int>;
 	var groundIds = new Map<String, { id : Int, fill : Array<Int> }>();
@@ -198,37 +197,37 @@ class TileBuilder {
 								if( dy == 0 )
 									k = dx == 0 ? 0 : dx == b.w - 1 ? 2 : 1;
 								else if( dy == b.h - 1 )
-									k = dx == 0 ? lowLeft_Corner : dx == b.w - 1 ? lowRight_Corner : lowMid_Corner;
+									k = dx == 0 ? LOW_LEFT_CORNER : dx == b.w - 1 ? LOW_RIGHT_CORNER : LOW_MID_CORNER;
 								else if( dx == 0 )
-									k = midLeft_Corner; //3
+									k = MID_LEFT_CORNER; //3
 								else if( dx == b.w - 1 )
-									k = midRight_Corner; //4
+									k = MID_RIGHT_CORNER; //4
 								else
 									continue;
 							case "corner":
 								if( dx == 0 && dy == 0 )
-									k = topLeft_LowerCorner; //9
+									k = TOP_LEFT_LOWERCORNER; //9
 								else if( dx == b.w - 1 && dy == 0 )
-									k = topRight_LowerCorner; //10
+									k = TOP_RIGHT_LOWERCORNER; //10
 								else if( dx == 0 && dy == b.h - 1 )
-									k = lowLeft_LowerCorner; //11
+									k = LOW_LEFT_LOWERCORNER; //11
 								else if( dx == b.w - 1 && dy == b.h - 1 )
-									k = lowRight_LowerCorner; //12
+									k = LOW_RIGHT_LOWERCORNER; //12
 								else
 									continue;
 							case "u":
 								if( dx == 1 && dy == 0 )
-									k = top_UCorner; //13
+									k = TOP_UCORNER; //13
 								else if( dx == 0 && dy == 1 )
-									k = midLeft_UCorner; //14
+									k = MID_LEFT_UCORNER; //14
 								else if( dx == 2 && dy == 1 )
-									k = midRight_UCorner; //15
+									k = MID_RIGHT_UCORNER; //15
 								else if( dx == 1 && dy == 2 )
-									k = low_UCorner; //16
+									k = LOW_UCORNER; //16
 								else
 									continue;
 							case "bottom":
-								k = dx == 0 ? left_Bottom : dx == b.w - 1 ? right_Bottom : mid_Bottom;
+								k = dx == 0 ? LEFT_BOTTOM : dx == b.w - 1 ? RIGHT_BOTTOM : MID_BOTTOM;
 							default:
 								continue;
 							}
@@ -287,21 +286,21 @@ class TileBuilder {
 
 					var bits = 0;
 					if( t == g_top_left )
-						bits |= topLeft_Bit; //1
+						bits |= TOP_LEFT_BIT; //1
 					if( t == g_top )
-						bits |= topMid_Bit; //2
+						bits |= TOP_MID_BIT; //2
 					if( t == g_top_right )
-						bits |= topRight_Bit; //4
+						bits |= TOP_RIGHT_BIT; //4
 					if( t == g_left )
-						bits |= midLeft_Bit; //8
+						bits |= MID_LEFT_BIT; //8
 					if( t == g_right )
-						bits |= midRight_Bit; //16
+						bits |= MID_RIGHT_BIT; //16
 					if( t == g_bottom_left )
-						bits |= lowLeft_Bit; //32
+						bits |= LOW_LEFT_BIT; //32
 					if( t == g_bottom )
-						bits |= lowMid_Bit; //64
+						bits |= LOW_MID_BIT; //64
 					if( t == g_bottom_right )
-						bits |= lowRight_Bit; //128
+						bits |= LOW_RIGHT_BIT; //128
 
 					inline function addTo( x : Int, y : Int, a : Array<Int> ) {
 						out.push(x);
@@ -326,25 +325,25 @@ class TileBuilder {
 						return f;
 					}
 
-					check(topMid_Bit | midLeft_Bit | midRight_Bit, topLeft_Bit | topRight_Bit, top_UCorner)
+					check(TOP_MID_BIT | MID_LEFT_BIT | MID_RIGHT_BIT, TOP_LEFT_BIT | TOP_RIGHT_BIT, TOP_UCORNER)
 					// check(2 | 8 | 16, 1 | 4, 13);
-					check(topMid_Bit | midLeft_Bit | lowMid_Bit, topLeft_Bit | lowLeft_Bit, midLeft_UCorner);
+					check(TOP_MID_BIT | MID_LEFT_BIT | LOW_MID_BIT, TOP_LEFT_BIT | LOW_LEFT_BIT, MID_LEFT_UCORNER);
 					// check(2 | 8 | 64, 1 | 32, 14);
-					check(topMid_Bit | midRight_Bit | lowMid_Bit, topRight_Bit | lowRight_Bit, midRight_UCorner);
+					check(TOP_MID_BIT | MID_RIGHT_BIT | LOW_MID_BIT, TOP_RIGHT_BIT | LOW_RIGHT_BIT, MID_RIGHT_UCORNER);
 					// check(2 | 16 | 64, 4 | 128, 15);
-					check(midLeft_Bit | midRight_Bit | lowMid_Bit, lowLeft_Bit | lowRight_Bit, low_UCorner);
+					check(MID_LEFT_BIT | MID_RIGHT_BIT | LOW_MID_BIT, LOW_LEFT_BIT | LOW_RIGHT_BIT, LOW_UCORNER);
 					// check(8 | 16 | 64, 32 | 128, 16);
 
-					check(topMid_Bit | midLeft_Bit, topLeft_Bit | topRight_Bit | lowLeft_Bit, topLeft_LowerCorner);
+					check(TOP_MID_BIT | MID_LEFT_BIT, TOP_LEFT_BIT | TOP_RIGHT_BIT | LOW_LEFT_BIT, TOP_LEFT_LOWERCORNER);
 					// check(2 | 8, 1 | 4 | 32, 9);
-					check(topMid_Bit | midRight_Bit, topLeft_Bit | topRight_Bit | lowRight_Bit, topRight_LowerCorner);
+					check(TOP_MID_BIT | MID_RIGHT_BIT, TOP_LEFT_BIT | TOP_RIGHT_BIT | LOW_RIGHT_BIT, TOP_RIGHT_LOWERCORNER);
 					// check(2 | 16, 1 | 4 | 128, 10);
-					check(midLeft_Bit | lowMid_Bit, topLeft_Bit | lowLeft_Bit | lowRight_Bit, lowLeft_LowerCorner);
+					check(MID_LEFT_BIT | LOW_MID_BIT, TOP_LEFT_BIT | LOW_LEFT_BIT | LOW_RIGHT_BIT, LOW_LEFT_LOWERCORNER);
 					// check(8 | 64, 1 | 32 | 128, 11);
-					check(midRight_Bit | lowMid_Bit, topRight_Bit | lowLeft_Bit | lowRight_Bit, lowRight_LowerCorner);
+					check(MID_RIGHT_BIT | LOW_MID_BIT, TOP_RIGHT_BIT | LOW_LEFT_BIT | LOW_RIGHT_BIT, LOW_RIGHT_LOWERCORNER);
 					// check(16 | 64, 4 | 32 | 128, 12);
 
-					if( check(topMid_Bit, topLeft_Bit | topRight_Bit, lowMid_Corner) ) 
+					if( check(TOP_MID_BIT, TOP_LEFT_BIT | TOP_RIGHT_BIT, LOW_MID_CORNER) ) 
 					{
 					// if( check(2, 1 | 4, 6) ) {
 						var a = bb[18];
@@ -362,28 +361,28 @@ class TileBuilder {
 						}
 					}
 
-					check(midLeft_Bit, topLeft_Bit | lowLeft_Bit, midRight_Corner);
+					check(MID_LEFT_BIT, TOP_LEFT_BIT | LOW_LEFT_BIT, MID_RIGHT_CORNER);
 					// check(8, 1 | 32, 4);
-					check(midRight_Bit, topRight_Bit | lowRight_Bit, midLeft_Corner);
+					check(MID_RIGHT_BIT, TOP_RIGHT_BIT | LOW_RIGHT_BIT, MID_LEFT_CORNER);
 					// check(16, 4 | 128, 3);
-					check(lowMid_Bit, lowLeft_Bit | lowRight_Bit, topMid_Corner);
+					check(LOW_MID_BIT, LOW_LEFT_BIT | LOW_RIGHT_BIT, TOP_MID_CORNER);
 					// check(64, 32 | 128, 1);
 
-					if( check(topLeft_Bit, topLeft_Bit, lowRight_Corner) ) {
+					if( check(TOP_LEFT_BIT, TOP_LEFT_BIT, LOW_RIGHT_CORNER) ) {
 					// if( check(1, 1, 7) ) {
 						var a = bb[19];
 						if( a.length != 0 )
 							addTo(x, y + 1, a);
 					}
-					if( check(topRight_Bit, topRight_Bit, lowLeft_Corner) ) {
+					if( check(TOP_RIGHT_BIT, TOP_RIGHT_BIT, LOW_LEFT_CORNER) ) {
 					// if( check(4, 4, 5) ) {
 						var a = bb[17];
 						if( a.length != 0 )
 							addTo(x, y + 1, a);
 					}
-					check(lowLeft_Bit, lowLeft_Bit, topRight_Corner);
+					check(LOW_LEFT_BIT, LOW_LEFT_BIT, TOP_RIGHT_CORNER);
 					// check(32, 32, 2);
-					check(lowRight_Bit, lowRight_Bit, topLeft_Corner);
+					check(LOW_RIGHT_BIT, LOW_RIGHT_BIT, TOP_LEFT_CORNER);
 					// check(128, 128, 0);
 				}
 			}
