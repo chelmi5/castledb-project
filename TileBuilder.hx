@@ -361,22 +361,30 @@ class TileBuilder {
 								out.push(a[1 + random(x + y * width) % (a.length - 2)]);
 						}
 					}
-					check(8, 1 | 32, 4);
-					check(16, 4 | 128, 3);
-					check(64, 32 | 128, 1);
 
-					if( check(1, 1, 7) ) {
+					check(midLeft_Bit, topLeft_Bit | lowLeft_Bit, midRight_Corner);
+					// check(8, 1 | 32, 4);
+					check(midRight_Bit, topRight_Bit | lowRight_Bit, midLeft_Corner);
+					// check(16, 4 | 128, 3);
+					check(lowMid_Bit, lowLeft_Bit | lowRight_Bit, topMid_Corner);
+					// check(64, 32 | 128, 1);
+
+					if( check(topLeft_Bit, topLeft_Bit, lowRight_Corner) ) {
+					// if( check(1, 1, 7) ) {
 						var a = bb[19];
 						if( a.length != 0 )
 							addTo(x, y + 1, a);
 					}
-					if( check(4, 4, 5) ) {
+					if( check(topRight_Bit, topRight_Bit, lowLeft_Corner) ) {
+					// if( check(4, 4, 5) ) {
 						var a = bb[17];
 						if( a.length != 0 )
 							addTo(x, y + 1, a);
 					}
-					check(32, 32, 2);
-					check(128, 128, 0);
+					check(lowLeft_Bit, lowLeft_Bit, topRight_Corner);
+					// check(32, 32, 2);
+					check(lowRight_Bit, lowRight_Bit, topLeft_Corner);
+					// check(128, 128, 0);
 				}
 			}
 		return out;
