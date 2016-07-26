@@ -302,16 +302,26 @@ class TileBuilder {
 					if( t == g_bottom_right )
 						bits |= LOW_RIGHT_BIT;
 
+					/**
+					*	The addTo function adds x, y, & a to the out array to be sent out when the function completes.
+					*	The last line in particular 
+					*/
 					inline function addTo( x : Int, y : Int, a : Array<Int> ) {
 						out.push(x);
 						out.push(y);
 						out.push(a.length == 1 ? a[0] : a[random(x + y * width) % a.length]);
 					}
 
+					/**
+					*	The add function takes the x & y from the current x & y in the loop, pretty sure the a array represents the tile ids to be used to create a given tile, & sends everything off to the addTo function.
+					*/
 					inline function add( a : Array<Int> ) {
 						addTo(x, y, a);
 					}
 
+					/**
+					*	The check function
+					*/
 					inline function check( b, clear, k ) {
 						var f = false;
 						if( bits & b == b ) {
