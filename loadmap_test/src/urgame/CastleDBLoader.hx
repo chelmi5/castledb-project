@@ -5,6 +5,8 @@ import flambe.System;
 import flambe.asset.AssetPack;
 import flambe.display.ImageSprite;
 import flambe.display.Texture;
+import flambe.input.Key;
+import flambe.input.KeyboardEvent;
 
 import urgame.LvlData;
 
@@ -17,6 +19,8 @@ class CastleDBLoader
 {
 	var map_pack : AssetPack;
 	var tBuilder : TileBuilder;
+	var npcHero : ImageSprite;
+	var npcFinrod : ImageSprite;
 
 	public function new(pack : AssetPack) {
 		map_pack = pack;
@@ -34,6 +38,28 @@ class CastleDBLoader
 			// trace(tBuilder);
 		}
 	}
+
+	//	Eventually put input handling in a separate clas
+    public function handleInput() {
+
+        System.keyboard.up.connect(handleKeyUp);
+        System.keyboard.down.connect(handleKeyDown);
+    }
+
+    public function handleKeyUp(event:KeyboardEvent) {
+        // trace("key up. " + event.key);
+    }
+    public function handleKeyDown(event:KeyboardEvent) {
+        // trace("key down. " + event.key);
+
+        switch(event.key) {
+            case Up: 	npcHero.y._ -= 10;
+            case Down: 	npcHero.y._ += 10;
+            case Left: 	npcHero.x._ -= 10;
+            case Right: npcHero.x._ += 10;
+            default:
+        }
+    }
 
 	public function loadCharacter(name:NpcKind) :ImageSprite
 	{
@@ -53,6 +79,17 @@ class CastleDBLoader
         _ImgHeight = LvlData.npc.get(name).image.height > 0 ? _ImgHeight * LvlData.npc.get(name).image.height : _ImgHeight ;
 
         var characterSprite = new ImageSprite(map_pack.getTexture(_FileName).subTexture(_X, _Y, _ImgWidth, _ImgHeight));
+
+        npcHero = name == Hero ? characterSprite : null;
+        
+        if(npcHero != null) {
+        	npcHero.x._ = 400; npcHero.y._ = 140;
+        	System.root.addChild(new Entity().add(npcHero));
+        }
+        else {
+        	characterSprite.x._ = 600; characterSprite.y._ = 365;
+        	System.root.addChild(new Entity().add(characterSprite));
+        }
         
         return characterSprite;
         

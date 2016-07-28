@@ -6,11 +6,9 @@ import flambe.asset.AssetPack;
 import flambe.asset.Manifest;
 import flambe.display.FillSprite;
 import flambe.display.ImageSprite;
-import flambe.math.Rectangle;
 
 import haxe.Resource;
 
-// import urgame.Data;
 import urgame.LvlData;
 import urgame.CastleDBLoader;
 
@@ -48,17 +46,14 @@ class Main
     private static function loadCastleDB(pack :AssetPack)
     {
         var myloadmap = new CastleDBLoader(pack);
-        var npcFinrod = myloadmap.loadCharacter(Finrod);
-        var npcHero = myloadmap.loadCharacter(Hero);
+        
 
         myloadmap.loadMap(FirstVillage);
 
-        npcFinrod.x._ = 600; npcFinrod.y._ = 365;
-        System.root.addChild(new Entity().add(npcFinrod));
+        myloadmap.loadCharacter(Finrod);
+        myloadmap.loadCharacter(Hero);
 
-        npcHero.x._ = 400; npcHero.y._ = 140;
-        System.root.addChild(new Entity().add(npcHero));
-
+        myloadmap.handleInput();
     }
 }
 
