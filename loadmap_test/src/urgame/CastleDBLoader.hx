@@ -105,7 +105,7 @@ class CastleDBLoader
 					var _x = a[p++];
 					var _y = a[p++];
 					var _id = a[p++];
-					
+
 					var border = new ImageSprite( getFrame(map_pack.getTexture(textureName), _id, tileSize, tileSize) );
 					border.x._ = _x * tileSize;
 					border.y._ = _y * tileSize;
